@@ -98,9 +98,10 @@ WHERE vorgang_schuljahr = '" + Global.AktSjAtl + @"'ORDER BY DBA.lehr_sc.ls_kuer
                                 Mail = theRow["Mail"] == null ? "" : theRow["Mail"].ToString(),
                                 Lehramt = theRow["Lehramt"] == null ? "" : theRow["Lehramt"].ToString()
                             };
-                            lehrer.Anrechnungs = new Anrechnungs();
+                            lehrer.Anrechnungs = new List<Anrechnung>();
 
-                            lehrer.Anrechnungs.AddRange((from a in anrechungs where a.LehrerIdUntis == lehrer.IdAtlantis select a).ToList());
+                            lehrer.DeputatSoll = (from a in anrechungs where a.LehrerKürzel == lehrer.Kürzel select a.DeputatSoll).FirstOrDefault();
+                            lehrer.Anrechnungs.AddRange((from a in anrechungs where a.LehrerKürzel == lehrer.Kürzel select a).ToList());
                             this.Add(lehrer);                            
                         }                        
                     }
@@ -113,6 +114,22 @@ WHERE vorgang_schuljahr = '" + Global.AktSjAtl + @"'ORDER BY DBA.lehr_sc.ls_kuer
                 {
                     connection.Close();
                 }
+            }
+        }
+
+        internal void PrüfeAltersermäßigung()
+        {
+            Console.WriteLine("§ 2 der Verordnung zur Ausführung des § 93 Abs. 2 Schulgesetz");
+
+            Console.WriteLine("(2) Die Zahl der wöchentlichen Pflichtstunden nach Absatz 1 wird aus Altersgründen ermäßigt vom Beginn des Schuljahres an, das auf die Vollendung des 55. Lebensjahres folgt.");
+
+            Console.WriteLine("25,5 Stunden entspricht 100% => 3 Stunden.");
+            Console.WriteLine("19.5 Stunden entspricht 75%% => 2 Stunden.");
+            Console.WriteLine("12,25 Stunden entspricht 50% => 1,5 Stunden.");
+
+            foreach (var lehrer in this)
+            {
+                lehrer.PrüfeAltersermäßigung();
             }
         }
     }

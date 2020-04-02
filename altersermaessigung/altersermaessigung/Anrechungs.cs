@@ -15,9 +15,18 @@ namespace altersermaessigung
             {
                 try
                 {
-                    string queryString = @"SELECT CountValue.Deleted, CountValue.Text, CountValue.Value, CountValue.CV_REASON_ID, CountValue.TEACHER_ID, CountValue.DateFrom, CountValue.DateTo
-FROM CountValue
-WHERE (((CountValue.SCHOOLYEAR_ID)= " + Global.AktSjUnt + ") AND ((CountValue.Value)<>0) AND ((CountValue.TEACHER_ID)<>0)) ORDER BY CountValue.TEACHER_ID;";
+                    string queryString = @"SELECT 
+CountValue.Deleted, 
+CountValue.Text, 
+CountValue.Value, 
+CountValue.CV_REASON_ID, 
+CountValue.TEACHER_ID, 
+CountValue.DateFrom, 
+CountValue.DateTo, 
+Teacher.Name,
+Teacher.PlannedWeek
+FROM CountValue LEFT JOIN Teacher ON CountValue.TEACHER_ID = Teacher.TEACHER_ID
+WHERE (((CountValue.SCHOOLYEAR_ID)=" + Global.AktSjUnt + @") AND ((CountValue.Deleted)=False) AND ((CountValue.Value)<>0) AND ((CountValue.TEACHER_ID)<>0) AND ((Teacher.SCHOOLYEAR_ID)=" + Global.AktSjUnt + @")) ORDER BY CountValue.TEACHER_ID;";
 
                     OleDbCommand oleDbCommand = new OleDbCommand(queryString, oleDbConnection);
                     oleDbConnection.Open();
@@ -47,7 +56,9 @@ WHERE (((CountValue.SCHOOLYEAR_ID)= " + Global.AktSjUnt + ") AND ((CountValue.Va
                             LehrerIdUntis = oleDbDataReader.GetInt32(4),
                             Von = oleDbDataReader.GetInt32(5) == 0 ? Global.ErsterTagDesSchuljahres : DateTime.ParseExact((oleDbDataReader.GetInt32(5)).ToString(), "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture),
                             Bis = oleDbDataReader.GetInt32(6) == 0 ? Global.ErsterTagDesSchuljahres : DateTime.ParseExact((oleDbDataReader.GetInt32(6)).ToString(), "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture),
-                        };
+                            LehrerKürzel = Global.SafeGetString(oleDbDataReader, 7),
+                            DeputatSoll = Convert.ToDouble(oleDbDataReader.GetInt32(8)) / 1000
+                    };
 
                         // Wenn eine Anrechnung mit dem selben Lehrer und dem selben Grund schon existiert, dann wird der Wert addiert, ...
 

@@ -16,7 +16,7 @@ namespace altersermaessigung
         {
             get
             {
-                int sj = (DateTime.Now.Month >= 8 ? DateTime.Now.Year + 1 : DateTime.Now.Year);
+                int sj = (DateTime.Now.Month >= 8 ? DateTime.Now.Year : DateTime.Now.Year - 1);
                 return sj.ToString() + "/" + (sj + 1 - 2000);
             }
         }
@@ -46,6 +46,15 @@ namespace altersermaessigung
             }
         }
 
+        public static DateTime LetzterTagDesSchuljahres
+        {
+            get
+            {
+                int sj = (DateTime.Now.Month >= 8 ? DateTime.Now.Year + 2 : DateTime.Now.Year + 1);
+                return new DateTime(sj, 8, 1);
+            }
+        }
+        
         public static string SafeGetString(OleDbDataReader reader, int colIndex)
         {
             if (!reader.IsDBNull(colIndex))

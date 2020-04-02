@@ -13,7 +13,7 @@ namespace altersermaessigung
             var prds = new Periodes();
             var anre = new Anrechnungs();
             var lehs = new Lehrers(prds, anre);
-
+            lehs.PrüfeAltersermäßigung();
             Console.ReadKey();
         }
     }

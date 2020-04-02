@@ -12,5 +12,7 @@ namespace altersermaessigung
         public DateTime Von { get; set; }
         public DateTime Bis { get; set; }
         public string Zeitart { get; internal set; }
+        public string LehrerKürzel { get; internal set; }
+        public double DeputatSoll { get; internal set; }
     }
 }
